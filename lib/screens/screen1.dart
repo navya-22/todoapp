@@ -1,97 +1,119 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:todoapp/screens/screen2.dart';
-import 'package:todoapp/screens/screen3.dart';
-import 'package:todoapp/screens/screen4.dart';
 
-class Screen1 extends StatefulWidget {
-  const Screen1({super.key});
+import 'package:flutter/material.dart';
+import 'package:todoapp/screens/completed_task_screen.dart';
+import 'package:todoapp/screens/editscreen.dart';
+import 'package:todoapp/services/todo_services.dart';
+
+import 'addscreen.dart';
+
+class Homescreen extends StatefulWidget {
+  final String Title;
+  final String Detail;
+  const Homescreen({
+    super.key, required this.Title, required this.Detail,
+  });
 
   @override
-  State<Screen1> createState() => _Screen1State();
+  State<Homescreen> createState() => _HomescreenState();
 }
 
-class _Screen1State extends State<Screen1> {
+class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.indigo[50],
-      appBar: AppBar(
-        backgroundColor: Colors.indigo[200],
-        title: Row(
-          children: [
-            Text(
-              'TODO APP',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Colors.indigo[50],
+        appBar: AppBar(
+          backgroundColor: Colors.indigo[200],
+          title: Container(
+            width: MediaQuery.of(context).size.width,
+            child: const Row(
+              children: [
+                Text(
+                  '  TODO APP',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 30,
+                  ),
+                ),
+                SizedBox(
+                  width: 150,
+                ),
+                Icon(
+                  Icons.calendar_month_outlined,
                   color: Colors.white,
-                  fontSize: 30),
+                  size: 30,
+                ),
+              ],
             ),
-            SizedBox(
-              width: 200,
-            ),
-            Icon(
-              Icons.calendar_month_outlined,
-              color: Colors.white,
-              size: 30,
-            )
-          ],
+          ),
+          automaticallyImplyLeading: false,
         ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              SizedBox(height: 20,),
-              todoContainer(context),
-              todoContainer(context),
-              todoContainer(context),
-              todoContainer(context),
-              todoContainer(context),
+        body: SafeArea(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: toDo.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return todoContainer(
+                        context,
+                        toDo[index]['title'],
+                        toDo[index]['detail'],
+                        index,
+                      );
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.indigo[200],
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Addscreen(
+                              ),
+                            ),
+                          );
+                        },
 
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.indigo[200],
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Screen2(),
-                          ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.add,
-                        color: Colors.white,
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        bottomNavigationBar: BottomNavigationBar(
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
               icon: Icon(
                 Icons.format_list_bulleted_sharp,
                 color: Colors.indigo[200],
               ),
-              label: 'All'),
-          BottomNavigationBarItem(
+              label: 'All',
+            ),
+            BottomNavigationBarItem(
               icon: IconButton(
                 icon: Icon(
                   Icons.check,
@@ -99,23 +121,27 @@ class _Screen1State extends State<Screen1> {
                 ),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Screen4(),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => completed_task_screen(),
+                    ),
+                  );
                 },
               ),
-              label: 'Completed'),
-        ],
+              label: 'Completed',
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Container todoContainer(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(16.0),
+  // Define todoContainer as a method of Screen1 widget
+  Widget todoContainer(
+      BuildContext context,  String title, String detail, int index) => Container(
+      margin: const EdgeInsets.all(16.0),
       width: MediaQuery.of(context).size.width - 15,
-      height: 80,
+      height: 100,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Colors.white,
@@ -124,7 +150,7 @@ class _Screen1State extends State<Screen1> {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
+            offset: const Offset(0, 3), // changes position of shadow
           ),
         ],
       ),
@@ -132,49 +158,70 @@ class _Screen1State extends State<Screen1> {
         children: [
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
+
               Text(
-                '    TODO TITLE  ',
+                '  Title : $title ',
                 style: TextStyle(color: Colors.indigo[200], fontSize: 22),
               ),
               Text(
-                '    TODO SUB TITLE ',
-              )
+                'detail: $detail',
+              ),
             ],
           ),
-          SizedBox(
-            width: 100,
+          const SizedBox(
+            width: 20,
           ),
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Screen3(),
-                    ));
-              },
-              icon: Icon(
-                Icons.edit_outlined,
-                color: Colors.indigo[200],
-              )),
-          SizedBox(
+            onPressed: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Editscreen(
+                    detail:detail,
+                    title: title,
+                    index: index,
+                  ),
+                ),
+              );},
+            icon: Icon(
+              Icons.edit_outlined,
+              color: Colors.indigo[200],
+            ),
+          ),
+          const SizedBox(
             width: 10,
           ),
-          Icon(
-            Icons.delete_outline,
-            color: Colors.indigo[200],
+          IconButton(
+            onPressed: () {
+              setState(() => deleteTodo(index: index));
+
+            },
+            icon: Icon(
+              Icons.delete_outline,
+              color: Colors.indigo[200],
+            ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
-          Icon(
-            Icons.check_circle_outline,
-            color: Colors.indigo[200],
-          )
+          IconButton(
+            onPressed: () {
+              setState(() {
+                completeTodo(
+                  index: index,
+                );
+              });
+            },
+            icon: Icon(
+              Icons.check_circle_outline,
+              color: Colors.indigo[200],
+            ),
+          ),
         ],
       ),
     );
-  }
 }

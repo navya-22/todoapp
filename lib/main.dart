@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp/screens/entry.dart';
 import 'package:todoapp/screens/screen1.dart';
-import 'package:todoapp/screens/screen2.dart';
-import 'package:todoapp/screens/screen3.dart';
-import 'package:todoapp/screens/screen4.dart';
+import 'package:todoapp/screens/addscreen.dart';
+import 'package:todoapp/screens/completed_task_screen.dart';
 
 void main() {
   runApp(
-    MaterialApp(
+    const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:Screen1() ,
+      home:Entryscreen() ,
     ));
 }
 

@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp/services/todo_services.dart';
 
-class Screen3 extends StatefulWidget {
-  const Screen3({super.key});
+class Editscreen extends StatefulWidget {
+  final String title;
+  final String detail;
+  final int index;
+  const Editscreen({required this.title,
+    required this.detail,
+    super.key, required this.index});
 
   @override
-  State<Screen3> createState() => _Screen3State();
+  State<Editscreen> createState() => _EditscreenState();
 }
 
-class _Screen3State extends State<Screen3> {
+class _EditscreenState extends State<Editscreen> {
+  late TextEditingController _titleController;
+  late TextEditingController _detailController;
   @override
+  void initState(){
+    super.initState();
+    _titleController = TextEditingController(text: widget.title);
+    _detailController =TextEditingController(text: widget.detail);
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -40,13 +53,14 @@ class _Screen3State extends State<Screen3> {
           Padding(
             padding: EdgeInsets.all(20.0),
             child: TextFormField(
-              // maxLength: 10, // Set the maximum length of the text field
+              controller: _titleController,
               decoration: InputDecoration(labelText: 'Title'),
             ),
           ),
           Padding(
             padding: EdgeInsets.all(20.0),
             child: TextFormField(
+              controller: _detailController,
               decoration: InputDecoration(labelText: 'Detail'),
             ),
           ),
@@ -66,7 +80,12 @@ class _Screen3State extends State<Screen3> {
                     borderRadius: BorderRadius.circular(10)),
                 child: TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      String title = _titleController.text;
+                      String detail = _detailController.text;
+                   Navigator.pop(context);
+                   editedTodo(title: title,detail: detail, index: widget.index);
+
+
                     },
                     child: Text('Update')),
               ),
